@@ -81,6 +81,18 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Product not found error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Product not found."
+                }
+              }
+            }
           }
         }
       }
