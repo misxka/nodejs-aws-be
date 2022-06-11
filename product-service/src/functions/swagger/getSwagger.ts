@@ -1,8 +1,8 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyResult } from 'aws-lambda';
 
 import swaggerDocument from './swagger.json';
 
-const getSwagger: APIGatewayProxyHandler = async () => {
+const getSwagger = async (): Promise<APIGatewayProxyResult> => {
   const body = `
     <!DOCTYPE html>
     <html lang="en">
