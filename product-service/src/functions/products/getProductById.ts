@@ -7,7 +7,12 @@ import products from '../../mocks/products.json';
 
 const getProductById: APIGatewayProxyHandler = async (event) => {
   const product: Product = products.find(product => product.id === event.pathParameters.productId);
-  return formatJSONResponse({
+  if (!product) {
+    return formatJSONResponse(404, {
+      message: 'Product not found.'
+    });
+  }
+  return formatJSONResponse(200, {
     product,
   });
 };
