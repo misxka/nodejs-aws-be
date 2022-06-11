@@ -13,7 +13,7 @@ export const getProductsList = {
 };
 
 export const getProductById = {
-  handler: `${handlerPath(__dirname)}/getProductsById.main`,
+  handler: `${handlerPath(__dirname)}/getProductById.main`,
   events: [
     {
       httpApi: {
