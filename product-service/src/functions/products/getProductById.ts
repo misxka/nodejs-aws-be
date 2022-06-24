@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { formatJSONResponse } from '../../libs/api-gateway';
 import { middyfy } from '../../libs/lambda';
-import { Product } from '../../models/product.model';
+import { Product } from '../../models/fe/product.model';
 import { findProductById } from '../../utils/product';
 
 export const getProductById = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
