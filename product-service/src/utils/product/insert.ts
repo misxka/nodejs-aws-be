@@ -5,15 +5,15 @@ import { getClient } from '../connect-db';
 
 export const insertProduct = async (product: Omit<ProductFE, 'id'>): Promise<ProductFE> => {
   const { title, description, price, count } = product;
-
-  const client = getClient();
-  await client.connect();
-  
   if (!title || !description || !price || !count) {
     return null;
   }
 
+  const client = getClient();
+  await client.connect();
+
   try {
+    await client.query('BEGIN');
     const created = (await client.query<ProductBE>(`
       INSERT INTO products (title, description, price)
       VALUES ($1, $2, $3)
@@ -24,9 +24,11 @@ export const insertProduct = async (product: Omit<ProductFE, 'id'>): Promise<Pro
       VALUES ($1, $2)
       RETURNING *
     `, [created.id, count])).rows[0];
+    await client.query('COMMIT');
     return { ...created, count: stock.count };
   } catch (e) {
     console.error('Error during DB request executing: ' + e);
+    await client.query('ROLLBACK');
     throw e;
   } finally {
     await client.end();
