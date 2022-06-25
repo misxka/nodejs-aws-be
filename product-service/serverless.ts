@@ -1,7 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 import * as dotenv from 'dotenv';
 
-import { getProductsList, getProductById } from '@functions/products';
+import { getProductsList, getProductById, addProduct } from '@functions/products';
 import { swagger } from '@functions/swagger';
 
 dotenv.config()
@@ -33,7 +33,7 @@ const serverlessConfiguration: AWS = {
     }
   },
   // import the function via paths
-  functions: { getProductsList, getProductById, swagger },
+  functions: { getProductsList, getProductById, addProduct, swagger },
   package: { individually: true },
   custom: {
     esbuild: {

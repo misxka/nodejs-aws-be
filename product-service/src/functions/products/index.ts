@@ -23,3 +23,15 @@ export const getProductById = {
     },
   ],
 };
+
+export const addProduct = {
+  handler: `${handlerPath(__dirname)}/addProduct.main`,
+  events: [
+    {
+      httpApi: {
+        method: 'post',
+        path: '/products',
+      }
+    }
+  ],
+};
