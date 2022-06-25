@@ -5,9 +5,12 @@ import { middyfy } from '../../libs/lambda';
 import { Product } from '../../models/fe/product.model';
 import { findProductById } from '../../utils/product/findById';
 import { serverError } from '../../utils/errors';
+import { log } from '../../utils/logger';
 
 export const getProductById = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
+    log('getProductById', event);
+    
     const product: Product = await findProductById(event.pathParameters.productId);
     if (!product) {
       return formatJSONResponse(404, {

@@ -5,9 +5,12 @@ import { middyfy } from '../../libs/lambda';
 import { Product } from '../../models/fe/product.model';
 import { insertProduct } from '../../utils/product/insert';
 import { clientError, serverError } from '../../utils/errors';
+import { log } from '../../utils/logger';
 
 export const addProduct = async (event: { body: Omit<Product, 'id'> }): Promise<APIGatewayProxyResult> => {
   try {
+    log('addProduct', event);
+    
     const product: Product = await insertProduct(event.body);
     if (!product) {
       const { statusCode, message } = clientError;
