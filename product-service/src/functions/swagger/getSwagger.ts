@@ -1,8 +1,11 @@
-import { APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
+import { log } from '../../utils/logger';
 import swaggerDocument from './swagger.json';
 
-const getSwagger = async (): Promise<APIGatewayProxyResult> => {
+const getSwagger = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  log('getProductsList', event);
+
   const body = `
     <!DOCTYPE html>
     <html lang="en">
