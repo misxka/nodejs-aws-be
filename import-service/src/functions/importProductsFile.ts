@@ -9,7 +9,7 @@ export const importProductsFile = async (event: APIGatewayProxyEvent): Promise<A
   const { name } = event.queryStringParameters;
   const key = `uploaded/${name}`;
 
-  const s3 = new S3({ region: 'eu-west-1' });
+  const s3 = new S3({ region: Config.Region });
   const params = {
     Bucket: Config.Bucket,
     Key: key,

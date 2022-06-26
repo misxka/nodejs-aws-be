@@ -6,3 +6,7 @@ export enum Config {
 export enum S3Operations {
   PutObject = 'putObject',
 };
+
+export enum S3Events {
+  ObjectCreated = 's3:ObjectCreated:*',
+};
