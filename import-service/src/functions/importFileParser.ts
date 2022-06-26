@@ -1,0 +1,48 @@
+import { APIGatewayProxyResult, S3Event } from 'aws-lambda';
+import { S3 } from 'aws-sdk';
+import csv from 'csv-parser';
+
+import { formatJSONResponse } from '@libs/api-gateway';
+import { middyfy } from '@libs/lambda';
+
+export const importFileParser = async (event: S3Event): Promise<APIGatewayProxyResult> => {
+  for (const record of event.Records) {
+    const { awsRegion, s3: { bucket, object: { key } } } = record;
+    const s3 = new S3({ region: awsRegion });
+    
+    const promise = () => new Promise(() => {
+      s3.getObject({
+        Bucket: bucket.name,
+        Key: key,
+      }).createReadStream()
+        .pipe(csv())
+        .on('data', (chunk) => {
+          console.log(chunk);
+        })
+        .on('end', async () => {
+          console.log(`${key} successfully parsed.`)
+
+          await s3.copyObject({
+            Bucket: bucket.name,
+            Key: key.replace('uploaded', 'parsed'),
+            CopySource: `${bucket.name}/${key}`,
+          }).promise();
+
+          await s3.deleteObject({
+            Bucket: bucket.name,
+            Key: key,
+          }).promise();
+
+          console.log(`${key} was moved from uploaded to parsed.`);
+        });
+    });
+
+    await promise();
+  }
+
+  return formatJSONResponse(200, {
+    message: 'Successfully parsed and moved',
+  });
+};
+
+export const main = middyfy(importFileParser);
