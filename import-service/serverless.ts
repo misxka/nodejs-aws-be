@@ -23,11 +23,15 @@ const serverlessConfiguration: AWS = {
       SQS_URL: {
         Ref: 'catalogItemsQueue',
       },
+      SNS_ARN: {
+        Ref: 'createProductTopic',
+      },
       PG_HOST: process.env.PG_HOST,
       PG_PORT: process.env.PG_PORT,
       PG_DATABASE: process.env.PG_DATABASE,
       PG_USERNAME: process.env.PG_USERNAME,
       PG_PASSWORD: process.env.PG_PASSWORD,
+      EMAIL_ENDPOINT: process.env.EMAIL_ENDPOINT,
     },
     stage: 'dev',
     region: Config.Region,
@@ -61,6 +65,13 @@ const serverlessConfiguration: AWS = {
           },
         ],
       },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: {
+          Ref: 'createProductTopic',
+        },
+      },
     ],
   },
   // import the function via paths
@@ -86,6 +97,18 @@ const serverlessConfiguration: AWS = {
           QueueName: 'catalogItemsQueue',
         },
       },
+      createProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic',
+          Subscription: [
+            {
+              Endpoint: process.env.EMAIL_ENDPOINT,
+              Protocol: 'email',
+            },
+          ],
+        },
+      }
     },
   },
 };

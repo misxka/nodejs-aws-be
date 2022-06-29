@@ -13,8 +13,23 @@ export const catalogBatchProcess = async (event: SQSEvent) => {
   });
 
   const createdProducts = await Promise.all(products.map((product) => insertProduct(product)));
-
   console.log(`${createdProducts} were added to products table.`);
+
+  const publishPromise = () => new Promise(() => {
+    sns.publish({
+      Subject: "New products were added",
+      Message: JSON.stringify(createdProducts),
+      TopicArn: process.env.SNS_ARN,
+    }, (e, data) => {
+      if (e) {
+        console.error(`Email was not sent: ${e}`);
+        return;
+      }
+      console.log(`Email with id ${data.MessageId} was sent.`);
+    });
+  });
+
+  await publishPromise();
 };
 
 export const main = middyfy(catalogBatchProcess);

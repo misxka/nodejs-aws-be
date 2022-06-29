@@ -8,7 +8,6 @@ import { middyfy } from '@libs/lambda';
 export const importFileParser = async (event: S3Event): Promise<APIGatewayProxyResult> => {
   for (const record of event.Records) {
     const { awsRegion, s3: { bucket, object: { key } } } = record;
-    console.log('Key: ' + key);
     const s3 = new S3({ region: awsRegion });
     
     const sqs = new SQS();
