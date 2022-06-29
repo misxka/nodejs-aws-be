@@ -30,3 +30,20 @@ export const importFileParser = {
     },
   ],
 };
+
+export const catalogBatchProcess = {
+  handler: `${handlerPath(__dirname)}/catalogBatchProcess.main`,
+  events: [
+    {
+      sqs: {
+        batchSize: 5,
+        arn: {
+          'Fn::GetAtt': [
+            'catalogItemsQueue',
+            'Arn',
+          ],
+        },
+      },
+    },
+  ],
+};
