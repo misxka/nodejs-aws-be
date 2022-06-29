@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult, S3Event } from 'aws-lambda';
-import { S3 } from 'aws-sdk';
+import { S3, SQS } from 'aws-sdk';
 import csv from 'csv-parser';
 
 import { formatJSONResponse } from '@libs/api-gateway';
@@ -10,6 +10,8 @@ export const importFileParser = async (event: S3Event): Promise<APIGatewayProxyR
     const { awsRegion, s3: { bucket, object: { key } } } = record;
     const s3 = new S3({ region: awsRegion });
     
+    const sqs = new SQS();
+
     const promise = () => new Promise(() => {
       s3.getObject({
         Bucket: bucket.name,
@@ -18,6 +20,17 @@ export const importFileParser = async (event: S3Event): Promise<APIGatewayProxyR
         .pipe(csv())
         .on('data', (chunk) => {
           console.log(chunk);
+
+          sqs.sendMessage({
+            QueueUrl: process.env.SQS_URL,
+            MessageBody: JSON.stringify(chunk),
+          }, (e, data) => {
+            if (e) {
+              console.error(`Data was not sent: ${e}`);
+              return;
+            }
+            console.log(`Message ${data.MessageId} was sent.`);
+          });
         })
         .on('end', async () => {
           console.log(`${key} successfully parsed.`)
