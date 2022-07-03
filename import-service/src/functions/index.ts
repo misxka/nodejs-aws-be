@@ -1,13 +1,25 @@
+import * as dotenv from 'dotenv';
+
 import { handlerPath } from '@libs/handler-resolver';
 import { Config, S3Events } from '../utils/constants';
+
+dotenv.config();
 
 export const importProductsFile = {
   handler: `${handlerPath(__dirname)}/importProductsFile.main`,
   events: [
     {
-      httpApi: {
+      http: {
         method: 'get',
         path: '/import',
+        cors: true,
+        authorizer: {
+          name: 'basicAuthorizer',
+          arn: `arn:aws:lambda:${Config.Region}:${process.env.ACCOUNT_ID}:function:authorization-service-dev-basicAuthorizer`,
+          resultTtlInSeconds: 0,
+          identitySource: 'method.request.header.Authorization',
+          type: 'token',
+        },
       },
     },
   ],

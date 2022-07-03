@@ -32,12 +32,10 @@ const serverlessConfiguration: AWS = {
       PG_USERNAME: process.env.PG_USERNAME,
       PG_PASSWORD: process.env.PG_PASSWORD,
       EMAIL_ENDPOINT: process.env.EMAIL_ENDPOINT,
+      ACCOUNT_ID: process.env.ACCOUNT_ID,
     },
     stage: 'dev',
     region: Config.Region,
-    httpApi: {
-      cors: true,
-    },
     iamRoleStatements: [
       {
         Effect: 'Allow',
@@ -108,7 +106,20 @@ const serverlessConfiguration: AWS = {
             },
           ],
         },
-      }
+      },
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
     },
   },
 };
