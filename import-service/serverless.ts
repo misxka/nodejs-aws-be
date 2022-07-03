@@ -32,6 +32,7 @@ const serverlessConfiguration: AWS = {
       PG_USERNAME: process.env.PG_USERNAME,
       PG_PASSWORD: process.env.PG_PASSWORD,
       EMAIL_ENDPOINT: process.env.EMAIL_ENDPOINT,
+      ACCOUNT_ID: process.env.ACCOUNT_ID,
     },
     stage: 'dev',
     region: Config.Region,
