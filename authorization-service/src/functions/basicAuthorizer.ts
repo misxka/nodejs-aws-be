@@ -23,7 +23,7 @@ export const basicAuthorizer = (event: APIGatewayTokenAuthorizerEvent, context, 
     const secret = process.env[username];
     const effect = (!secret || secret != password) ? Actions.Deny : Actions.Allow;
 
-    const policy = generatePolicy(username, effect, '*');
+    const policy = generatePolicy(username, effect, methodArn);
 
     cb(null, policy);
   } catch (err) {
