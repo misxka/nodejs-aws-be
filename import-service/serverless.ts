@@ -36,9 +36,6 @@ const serverlessConfiguration: AWS = {
     },
     stage: 'dev',
     region: Config.Region,
-    httpApi: {
-      cors: true,
-    },
     iamRoleStatements: [
       {
         Effect: 'Allow',
@@ -109,7 +106,20 @@ const serverlessConfiguration: AWS = {
             },
           ],
         },
-      }
+      },
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
     },
   },
 };
