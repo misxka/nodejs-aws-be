@@ -10,7 +10,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "2kzsxghvwg.execute-api.eu-west-1.amazonaws.com",
+  "host": "juotaeb5dc.execute-api.eu-west-1.amazonaws.com",
   "tags": [
     {
       "name": "products",
@@ -45,6 +45,63 @@
                   }
                 }
               }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ServerError"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "products"
+        ],
+        "summary": "Add product",
+        "description": "",
+        "operationId": "addProduct",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Product to be created",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ProductCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "products": {
+                  "type": "object",
+                  "$ref": "#/definitions/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Client error",
+            "schema": {
+              "$ref": "#/definitions/ClientError"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ServerError"
             }
           }
         }
@@ -93,6 +150,12 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ServerError"
+            }
           }
         }
       }
@@ -116,13 +179,54 @@
         },
         "price": {
           "type": "number",
-          "format": "double",
-          "example": 25000.5
+          "format": "int64",
+          "example": 25000
         },
         "count": {
           "type": "number",
           "format": "int64",
           "example": 4
+        }
+      }
+    },
+    "ProductCreate": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Car slot - 1"
+        },
+        "description": {
+          "type": "string",
+          "example": "Short Product Description - Car slot 1"
+        },
+        "price": {
+          "type": "number",
+          "format": "int64",
+          "example": 25000
+        },
+        "count": {
+          "type": "number",
+          "format": "int64",
+          "example": 4
+        }
+      }
+    },
+    "ServerError": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Internal server error"
+        }
+      }
+    },
+    "ClientError": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Wrong input"
         }
       }
     }
