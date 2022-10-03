@@ -11,7 +11,7 @@ export const addProduct = async (event: { body: Omit<Product, 'id'> }): Promise<
   try {
     log('addProduct', event);
     
-    const product: Product = await insertProduct(event.body);
+    const product = await insertProduct(event.body);
     if (!product) {
       const { statusCode, message } = clientError;
       return formatJSONResponse(statusCode, {
