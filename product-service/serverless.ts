@@ -20,17 +20,28 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      PG_HOST: process.env.PG_HOST,
-      PG_PORT: process.env.PG_PORT,
-      PG_DATABASE: process.env.PG_DATABASE,
-      PG_USERNAME: process.env.PG_USERNAME,
-      PG_PASSWORD: process.env.PG_PASSWORD,
+      PRODUCTS_TABLE: process.env.PRODUCTS_TABLE,
+      STOCKS_TABLE: process.env.STOCKS_TABLE,
     },
     stage: 'dev',
     region: 'eu-west-1',
     httpApi: {
       cors: true,
-    }
+    },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: [
+          'dynamodb:Query',
+          'dynamodb:Scan',
+          'dynamodb:GetItem',
+          'dynamodb:PutItem',
+          'dynamodb:UpdateItem',
+          'dynamodb:DeleteItem',
+        ],
+        Resource: "*",
+      },
+    ],
   },
   // import the function via paths
   functions: { getProductsList, getProductById, addProduct, swagger },
