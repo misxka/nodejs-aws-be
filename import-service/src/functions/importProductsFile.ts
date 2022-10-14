@@ -7,7 +7,7 @@ import { Config, S3Operations } from '../utils/constants';
 
 export const importProductsFile = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const { name } = event.queryStringParameters;
-  const key = `uploaded/${name}`;
+  const key = `uploaded/${name.replace(/[^a-zA-Z0-9]/ig, '_')}`;
 
   const s3 = new S3({ region: Config.Region });
   const params = {
