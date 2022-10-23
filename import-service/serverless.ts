@@ -67,6 +67,13 @@ const serverlessConfiguration: AWS = {
           Ref: 'createProductTopic',
         },
       },
+      {
+        Effect: 'Allow',
+        Action: [
+          'dynamodb:PutItem',
+        ],
+        Resource: "*",
+      },
     ],
   },
   // import the function via paths
