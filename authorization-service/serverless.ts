@@ -1,13 +1,12 @@
 import type { AWS } from '@serverless/typescript';
 import * as dotenv from 'dotenv';
 
-import { getProductsList, getProductById, addProduct } from '@functions/products';
-import { swagger } from '@functions/swagger';
+import { basicAuthorizer } from './src/functions';
 
 dotenv.config()
 
 const serverlessConfiguration: AWS = {
-  service: 'product-service',
+  service: 'authorization-service',
   frameworkVersion: '3',
   plugins: ['serverless-esbuild'],
   provider: {
@@ -20,38 +19,20 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      PRODUCTS_TABLE: process.env.PRODUCTS_TABLE,
-      STOCKS_TABLE: process.env.STOCKS_TABLE,
+      misxka: process.env.misxka,
     },
     stage: 'dev',
     region: 'eu-west-1',
-    httpApi: {
-      cors: true,
-    },
-    iamRoleStatements: [
-      {
-        Effect: 'Allow',
-        Action: [
-          'dynamodb:Query',
-          'dynamodb:Scan',
-          'dynamodb:GetItem',
-          'dynamodb:PutItem',
-          'dynamodb:UpdateItem',
-          'dynamodb:DeleteItem',
-        ],
-        Resource: "*",
-      },
-    ],
   },
   // import the function via paths
-  functions: { getProductsList, getProductById, addProduct, swagger },
+  functions: { basicAuthorizer },
   package: { individually: true },
   custom: {
     esbuild: {
       bundle: true,
       minify: false,
       sourcemap: true,
-      exclude: ['aws-sdk', 'pg-native'],
+      exclude: ['aws-sdk'],
       target: 'node14',
       define: { 'require.resolve': undefined },
       platform: 'node',

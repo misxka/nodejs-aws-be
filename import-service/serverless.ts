@@ -26,18 +26,13 @@ const serverlessConfiguration: AWS = {
       SNS_ARN: {
         Ref: 'createProductTopic',
       },
-      PG_HOST: process.env.PG_HOST,
-      PG_PORT: process.env.PG_PORT,
-      PG_DATABASE: process.env.PG_DATABASE,
-      PG_USERNAME: process.env.PG_USERNAME,
-      PG_PASSWORD: process.env.PG_PASSWORD,
+      PRODUCTS_TABLE: process.env.PRODUCTS_TABLE,
+      STOCKS_TABLE: process.env.STOCKS_TABLE,
       EMAIL_ENDPOINT: process.env.EMAIL_ENDPOINT,
+      ACCOUNT_ID: process.env.ACCOUNT_ID,
     },
     stage: 'dev',
     region: Config.Region,
-    httpApi: {
-      cors: true,
-    },
     iamRoleStatements: [
       {
         Effect: 'Allow',
@@ -71,6 +66,13 @@ const serverlessConfiguration: AWS = {
         Resource: {
           Ref: 'createProductTopic',
         },
+      },
+      {
+        Effect: 'Allow',
+        Action: [
+          'dynamodb:PutItem',
+        ],
+        Resource: "*",
       },
     ],
   },
@@ -108,7 +110,20 @@ const serverlessConfiguration: AWS = {
             },
           ],
         },
-      }
+      },
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: {
+            Ref: 'ApiGatewayRestApi',
+          },
+        },
+      },
     },
   },
 };
